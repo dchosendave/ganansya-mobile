@@ -1,98 +1,161 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
 
-export default function HomeScreen() {
+const mockBalances = {
+  cashOnHand: 10000,
+  gcashBalance: 10000,
+  kitaToday: 0,
+};
+
+const peso = new Intl.NumberFormat('en-PH', {
+  style: 'currency',
+  currency: 'PHP',
+  maximumFractionDigits: 0,
+});
+
+export default function DashboardScreen() {
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ThemedView style={styles.screen}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={styles.header}>
+          <ThemedText style={styles.eyebrow}>Ganansya</ThemedText>
+          <ThemedText type="title" style={styles.title}>
+            Kumusta, Tindera
+          </ThemedText>
+          <ThemedText style={styles.subtitle}>Today&apos;s cash in/out snapshot</ThemedText>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View style={styles.balanceGrid}>
+          <BalanceCard label="Cash on Hand" value={mockBalances.cashOnHand} />
+          <BalanceCard label="GCash Balance" value={mockBalances.gcashBalance} />
+          <BalanceCard label="Kita Today" value={mockBalances.kitaToday} tone="accent" />
+        </View>
+
+        <View style={styles.actions}>
+          <Pressable style={[styles.actionButton, styles.cashInButton]}>
+            <ThemedText style={styles.actionText}>Cash In</ThemedText>
+          </Pressable>
+          <Pressable style={[styles.actionButton, styles.cashOutButton]}>
+            <ThemedText style={styles.actionText}>Cash Out</ThemedText>
+          </Pressable>
+        </View>
+
+        <View style={styles.notice}>
+          <ThemedText type="defaultSemiBold" style={styles.noticeTitle}>
+            Float Status
+          </ThemedText>
+          <ThemedText style={styles.noticeText}>
+            Healthy pa ang cash at GCash balance. Warnings will show here kapag mababa na ang
+            balance.
+          </ThemedText>
+        </View>
+      </ScrollView>
+    </ThemedView>
+  );
+}
+
+type BalanceCardProps = {
+  label: string;
+  value: number;
+  tone?: 'default' | 'accent';
+};
+
+function BalanceCard({ label, value, tone = 'default' }: BalanceCardProps) {
+  return (
+    <View style={[styles.balanceCard, tone === 'accent' && styles.accentCard]}>
+      <ThemedText style={styles.balanceLabel}>{label}</ThemedText>
+      <ThemedText style={styles.balanceValue}>{peso.format(value)}</ThemedText>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  screen: {
+    flex: 1,
+  },
+  content: {
+    gap: 20,
+    padding: 20,
+    paddingTop: 72,
+  },
+  header: {
+    gap: 6,
+  },
+  eyebrow: {
+    color: '#2563EB',
+    fontSize: 15,
+    fontWeight: '700',
+  },
+  title: {
+    fontSize: 30,
+    lineHeight: 36,
+  },
+  subtitle: {
+    color: '#64748B',
+  },
+  balanceGrid: {
+    gap: 12,
+  },
+  balanceCard: {
+    gap: 8,
+    borderColor: '#E2E8F0',
+    borderRadius: 8,
+    borderWidth: 1,
+    backgroundColor: '#F8FAFC',
+    padding: 18,
+  },
+  accentCard: {
+    borderColor: '#BBF7D0',
+    backgroundColor: '#F0FDF4',
+  },
+  balanceLabel: {
+    color: '#475569',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  balanceValue: {
+    color: '#0F172A',
+    fontSize: 30,
+    fontWeight: '800',
+    lineHeight: 36,
+  },
+  actions: {
     flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    minHeight: 72,
+    borderRadius: 8,
+    paddingHorizontal: 16,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  cashInButton: {
+    backgroundColor: '#2563EB',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  cashOutButton: {
+    backgroundColor: '#16A34A',
+  },
+  actionText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '800',
+  },
+  notice: {
+    gap: 6,
+    borderColor: '#FED7AA',
+    borderRadius: 8,
+    borderWidth: 1,
+    backgroundColor: '#FFF7ED',
+    padding: 16,
+  },
+  noticeTitle: {
+    color: '#9A3412',
+  },
+  noticeText: {
+    color: '#7C2D12',
   },
 });
