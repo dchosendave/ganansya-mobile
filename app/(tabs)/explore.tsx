@@ -1,127 +1,87 @@
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useState } from 'react';
+import { Pressable, Text, TextInput, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
+type TransactionType = 'cashIn' | 'cashOut';
 
 export default function TransactionScreen() {
+  const [transactionType, setTransactionType] = useState<TransactionType>('cashIn');
+
   return (
-    <ThemedView style={styles.screen}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <ThemedText style={styles.eyebrow}>New Transaction</ThemedText>
-          <ThemedText type="title" style={styles.title}>
+    <View className="flex-1 bg-white">
+      <View className="gap-5 px-5 pt-[72px]">
+        <View className="gap-1.5">
+          <Text className="text-[15px] font-bold text-blue-600">New Transaction</Text>
+          <Text className="text-3xl font-extrabold leading-9 text-slate-950">
             Piliin ang serbisyo
-          </ThemedText>
+          </Text>
         </View>
 
-        <View style={styles.typeRow}>
-          <Pressable style={[styles.typeButton, styles.cashInButton]}>
-            <ThemedText style={styles.typeButtonText}>Cash In</ThemedText>
-          </Pressable>
-          <Pressable style={[styles.typeButton, styles.cashOutButton]}>
-            <ThemedText style={styles.typeButtonText}>Cash Out</ThemedText>
-          </Pressable>
+        <View className="flex-row gap-3">
+          <TransactionTypeButton
+            label="Cash In"
+            selected={transactionType === 'cashIn'}
+            selectedClassName="bg-blue-600"
+            onPress={() => setTransactionType('cashIn')}
+          />
+          <TransactionTypeButton
+            label="Cash Out"
+            selected={transactionType === 'cashOut'}
+            selectedClassName="bg-emerald-600"
+            onPress={() => setTransactionType('cashOut')}
+          />
         </View>
 
-        <View style={styles.form}>
-          <ThemedText type="defaultSemiBold">Amount</ThemedText>
+        <View className="gap-2.5">
+          <Text className="text-base font-semibold text-slate-900">Amount</Text>
           <TextInput
+            className="min-h-14 rounded-lg border border-slate-300 bg-white px-4 text-lg text-slate-900"
             keyboardType="numeric"
             placeholder="Halimbawa: 1000"
             placeholderTextColor="#94A3B8"
-            style={styles.input}
           />
 
-          <ThemedText type="defaultSemiBold">Reference Number</ThemedText>
+          <Text className="mt-1 text-base font-semibold text-slate-900">Reference Number</Text>
           <TextInput
+            className="min-h-14 rounded-lg border border-slate-300 bg-white px-4 text-lg text-slate-900"
             placeholder="GCash reference"
             placeholderTextColor="#94A3B8"
-            style={styles.input}
           />
         </View>
 
-        <View style={styles.summary}>
-          <ThemedText type="defaultSemiBold" style={styles.summaryTitle}>
-            Milestone 1 note
-          </ThemedText>
-          <ThemedText style={styles.summaryText}>
-            Static muna ito. Sa next milestone natin ikakabit ang fee calculation, fee deduction
-            mode, confirmation, at saved transaction history.
-          </ThemedText>
+        <View className="gap-1.5 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <Text className="text-base font-semibold text-blue-700">NativeWind lesson</Text>
+          <Text className="text-base leading-6 text-blue-950">
+            This screen now uses className instead of StyleSheet. The selected transaction type is
+            managed with useState.
+          </Text>
         </View>
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  content: {
-    gap: 20,
-    padding: 20,
-    paddingTop: 72,
-  },
-  header: {
-    gap: 6,
-  },
-  eyebrow: {
-    color: '#2563EB',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  title: {
-    fontSize: 30,
-    lineHeight: 36,
-  },
-  typeRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  typeButton: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 84,
-    borderRadius: 8,
-    padding: 16,
-  },
-  cashInButton: {
-    backgroundColor: '#2563EB',
-  },
-  cashOutButton: {
-    backgroundColor: '#16A34A',
-  },
-  typeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 20,
-    fontWeight: '800',
-  },
-  form: {
-    gap: 10,
-  },
-  input: {
-    minHeight: 56,
-    borderColor: '#CBD5E1',
-    borderRadius: 8,
-    borderWidth: 1,
-    color: '#0F172A',
-    fontSize: 18,
-    paddingHorizontal: 16,
-  },
-  summary: {
-    gap: 6,
-    borderColor: '#BFDBFE',
-    borderRadius: 8,
-    borderWidth: 1,
-    backgroundColor: '#EFF6FF',
-    padding: 16,
-  },
-  summaryTitle: {
-    color: '#1D4ED8',
-  },
-  summaryText: {
-    color: '#1E3A8A',
-  },
-});
+type TransactionTypeButtonProps = {
+  label: string;
+  selected: boolean;
+  selectedClassName: string;
+  onPress: () => void;
+};
+
+function TransactionTypeButton({
+  label,
+  selected,
+  selectedClassName,
+  onPress,
+}: TransactionTypeButtonProps) {
+  return (
+    <Pressable
+      className={`min-h-[84px] flex-1 items-center justify-center rounded-lg px-4 ${
+        selected ? selectedClassName : 'border border-slate-300 bg-white'
+      }`}
+      onPress={onPress}>
+      <Text className={`text-xl font-extrabold ${selected ? 'text-white' : 'text-slate-700'}`}>
+        {label}
+      </Text>
+    </Pressable>
+  );
+}
