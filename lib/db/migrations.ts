@@ -63,6 +63,44 @@ const migrations: Migration[] = [
       `);
     },
   },
+  {
+    version: 3,
+    name: 'create_pricing_tiers',
+    up: async (db) => {
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS pricing_tiers (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          label TEXT NOT NULL,
+          min_amount INTEGER NOT NULL,
+          max_amount INTEGER,
+          fee INTEGER NOT NULL CHECK (fee >= 0),
+          sort_order INTEGER NOT NULL,
+          updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_pricing_tiers_sort ON pricing_tiers(sort_order);
+      `);
+    },
+  },
+  {
+    version: 4,
+    name: 'create_reconciliations',
+    up: async (db) => {
+      await db.execAsync(`
+        CREATE TABLE IF NOT EXISTS reconciliations (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          expected_cash INTEGER NOT NULL,
+          expected_gcash INTEGER NOT NULL,
+          actual_cash INTEGER NOT NULL,
+          actual_gcash INTEGER NOT NULL,
+          difference INTEGER NOT NULL,
+          note TEXT,
+          account_id INTEGER REFERENCES accounts(id),
+          created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_reconciliations_created_at ON reconciliations(created_at);
+      `);
+    },
+  },
 ];
 
 export async function runMigrations(db: SQLiteDatabase): Promise<void> {

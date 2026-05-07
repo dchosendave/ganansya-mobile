@@ -69,3 +69,47 @@ export interface AuditEventRow {
   account_id: number | null;
   created_at: string;
 }
+
+export interface PricingTier {
+  id: number;
+  label: string;
+  minAmount: number;
+  maxAmount: number | null;
+  fee: number;
+  sortOrder: number;
+  updatedAt: string;
+}
+
+export interface PricingTierRow {
+  id: number;
+  label: string;
+  min_amount: number;
+  max_amount: number | null;
+  fee: number;
+  sort_order: number;
+  updated_at: string;
+}
+
+export interface Reconciliation {
+  id: number;
+  expectedCash: number;
+  expectedGcash: number;
+  actualCash: number;
+  actualGcash: number;
+  difference: number;
+  note: string | null;
+  accountId: number | null;
+  createdAt: string;
+}
+
+export interface ReconciliationRow {
+  id: number;
+  expected_cash: number;
+  expected_gcash: number;
+  actual_cash: number;
+  actual_gcash: number;
+  difference: number;
+  note: string | null;
+  account_id: number | null;
+  created_at: string;
+}

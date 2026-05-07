@@ -2,16 +2,18 @@ import { useCallback, useMemo, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen, Button, Field, MetricCard, Section } from '@/components/app-screen';
-import { floatThreshold, formatPeso, getFeeForAmount } from '@/constants/ganansya';
+import { floatThreshold, formatPeso } from '@/constants/ganansya';
 import { useAsyncData } from '@/hooks/use-async-data';
 import { useAuth } from '@/lib/auth/context';
 import { getBalances } from '@/lib/db/balances';
+import { computeFee, listPricingTiers } from '@/lib/db/pricing';
 import { createTransaction, projectBalances } from '@/lib/db/transactions';
-import type { BalanceSnapshot, TransactionType } from '@/types/db';
+import type { BalanceSnapshot, PricingTier, TransactionType } from '@/types/db';
 
 export default function TransactionScreen() {
   const { account } = useAuth();
   const balanceQuery = useAsyncData<BalanceSnapshot>(getBalances);
+  const tiersQuery = useAsyncData<PricingTier[]>(listPricingTiers, []);
 
   const [transactionType, setTransactionType] = useState<TransactionType>('cashIn');
   const [amount, setAmount] = useState('');
@@ -19,7 +21,8 @@ export default function TransactionScreen() {
   const [submitting, setSubmitting] = useState(false);
 
   const parsedAmount = Math.floor(Number(amount.replace(/,/g, '')) || 0);
-  const fee = useMemo(() => getFeeForAmount(parsedAmount), [parsedAmount]);
+  const tiers = useMemo<PricingTier[]>(() => tiersQuery.data ?? [], [tiersQuery.data]);
+  const fee = useMemo(() => computeFee(tiers, parsedAmount), [tiers, parsedAmount]);
   const total = parsedAmount + fee;
 
   const balances = balanceQuery.data;

@@ -1,6 +1,24 @@
-import { ActionLink, AppScreen, EmptyState, Section } from '@/components/app-screen';
+import { Alert } from 'react-native';
+
+import {
+  ActionButton,
+  ActionLink,
+  AppScreen,
+  EmptyState,
+  Section,
+} from '@/components/app-screen';
+import { useAuth } from '@/lib/auth/context';
 
 export default function MoreScreen() {
+  const { account, signOut } = useAuth();
+
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Lalabas ka sa account. Sigurado?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Logout', style: 'destructive', onPress: signOut },
+    ]);
+  };
+
   return (
     <AppScreen
       eyebrow="More"
@@ -39,8 +57,20 @@ export default function MoreScreen() {
         />
       </Section>
 
+      <Section
+        title="Account"
+        description={account ? `Naka-sign in bilang ${account.phone}` : undefined}>
+        <ActionButton
+          description="Sign out and return to the PIN login screen."
+          icon="logout"
+          label="Logout"
+          onPress={handleLogout}
+          tone="red"
+        />
+      </Section>
+
       <EmptyState
-        description="Role permissions can decide which items are visible after auth is connected."
+        description="Role permissions can decide which items are visible after multi-role auth ships."
         icon="admin-panel-settings"
         title="Role-ready"
       />

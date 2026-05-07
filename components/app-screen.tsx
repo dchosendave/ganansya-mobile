@@ -64,12 +64,14 @@ export function MetricCard({ label, value, caption, tone = 'neutral' }: MetricCa
   );
 }
 
+type ActionTone = 'blue' | 'green' | 'orange' | 'slate' | 'red';
+
 type ActionLinkProps = {
   href: Href;
   icon: MaterialIconName;
   label: string;
   description: string;
-  tone?: 'blue' | 'green' | 'orange' | 'slate';
+  tone?: ActionTone;
 };
 
 export function ActionLink({
@@ -97,6 +99,41 @@ export function ActionLink({
         <MaterialIcons name="chevron-right" size={24} color="#64748B" />
       </Pressable>
     </Link>
+  );
+}
+
+type ActionButtonProps = {
+  onPress: () => void;
+  icon: MaterialIconName;
+  label: string;
+  description: string;
+  tone?: ActionTone;
+};
+
+export function ActionButton({
+  onPress,
+  icon,
+  label,
+  description,
+  tone = 'slate',
+}: ActionButtonProps) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.actionLink,
+        actionToneStyles[tone],
+        pressed && styles.pressed,
+      ]}>
+      <View style={styles.actionIconWrap}>
+        <MaterialIcons name={icon} size={24} color={actionIconColors[tone]} />
+      </View>
+      <View style={styles.actionCopy}>
+        <Text style={styles.actionLabel}>{label}</Text>
+        <Text style={styles.actionDescription}>{description}</Text>
+      </View>
+      <MaterialIcons name="chevron-right" size={24} color="#64748B" />
+    </Pressable>
   );
 }
 
@@ -201,16 +238,21 @@ const actionToneStyles = StyleSheet.create({
     borderColor: '#FED7AA',
     backgroundColor: '#FFF7ED',
   },
+  red: {
+    borderColor: '#FECACA',
+    backgroundColor: '#FEF2F2',
+  },
   slate: {
     borderColor: '#E2E8F0',
     backgroundColor: '#FFFFFF',
   },
 });
 
-const actionIconColors = {
+const actionIconColors: Record<ActionTone, string> = {
   blue: '#2563EB',
   green: '#16A34A',
   orange: '#EA580C',
+  red: '#B91C1C',
   slate: '#475569',
 };
 
