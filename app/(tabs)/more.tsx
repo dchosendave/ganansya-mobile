@@ -30,7 +30,7 @@ export default function MoreScreen() {
           href="/rebalance"
           icon="sync-alt"
           label="Rebalance Request"
-          tone="orange"
+          tone="gold"
         />
       </Section>
 
@@ -40,20 +40,21 @@ export default function MoreScreen() {
           href="/admin/pricing"
           icon="price-change"
           label="Pricing Rules"
-          tone="blue"
+          tone="brand"
         />
         <ActionLink
           description="Daily and monthly profit snapshots."
           href="/reports"
           icon="bar-chart"
           label="Reports"
-          tone="green"
+          tone="ok"
         />
         <ActionLink
           description="View edits, corrections, and operational events."
           href="/audit"
           icon="history"
           label="Audit Trail"
+          tone="plain"
         />
       </Section>
 
@@ -65,7 +66,7 @@ export default function MoreScreen() {
           icon="logout"
           label="Logout"
           onPress={handleLogout}
-          tone="red"
+          tone="danger"
         />
       </Section>
 

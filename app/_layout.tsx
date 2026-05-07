@@ -2,7 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 import 'react-native-reanimated';
 import '../global.css';
 
@@ -37,17 +37,17 @@ export default function RootLayout() {
 
   if (initError) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorTitle}>Cannot start the app</Text>
-        <Text style={styles.errorBody}>{initError}</Text>
+      <View className="flex-1 items-center justify-center gap-3 bg-stone-50 p-5">
+        <Text className="text-lg font-black text-red-700">Cannot start the app</Text>
+        <Text className="text-center text-sm text-red-900">{initError}</Text>
       </View>
     );
   }
 
   if (!ready) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2563EB" />
+      <View className="flex-1 items-center justify-center gap-3 bg-stone-50 p-5">
+        <ActivityIndicator size="large" color="#047857" />
       </View>
     );
   }
@@ -86,24 +86,3 @@ function AuthGate() {
 
   return null;
 }
-
-const styles = StyleSheet.create({
-  center: {
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    flex: 1,
-    gap: 12,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  errorTitle: {
-    color: '#991B1B',
-    fontSize: 18,
-    fontWeight: '900',
-  },
-  errorBody: {
-    color: '#7F1D1D',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-});

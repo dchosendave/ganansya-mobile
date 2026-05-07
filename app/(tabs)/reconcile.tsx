@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 
 import { AppScreen, Button, Field, MetricCard, Section } from '@/components/app-screen';
 import { formatPeso } from '@/constants/ganansya';
@@ -86,7 +86,7 @@ export default function ReconcileScreen() {
       eyebrow="Daily Reconciliation"
       title="End of day check"
       description="Compare actual cash and GCash against the system balance.">
-      <View style={styles.summaryGrid}>
+      <View className="gap-3">
         <MetricCard label="Expected Total" value={formatPeso.format(expectedTotal)} />
         <MetricCard
           label="Difference"
@@ -113,10 +113,12 @@ export default function ReconcileScreen() {
       </Section>
 
       <Section title="Output">
-        <View style={styles.outputBox}>
-          <Text style={styles.outputLabel}>Actual Total</Text>
-          <Text style={styles.outputValue}>{formatPeso.format(actualTotal)}</Text>
-          <Text style={styles.outputNote}>
+        <View className="gap-1 rounded-lg border border-stone-200 bg-white p-4">
+          <Text className="text-sm font-extrabold text-stone-600">Actual Total</Text>
+          <Text className="text-3xl font-black leading-9 text-stone-900">
+            {formatPeso.format(actualTotal)}
+          </Text>
+          <Text className="text-sm leading-5 text-stone-500">
             A non-zero difference should be reviewed before closing the day.
           </Text>
         </View>
@@ -130,27 +132,26 @@ export default function ReconcileScreen() {
 
       {data?.last ? (
         <Section title="Last Reconciliation">
-          <View style={styles.lastBox}>
-            <Text style={styles.lastTime}>{formatTime(data.last.createdAt)}</Text>
-            <View style={styles.lastRow}>
-              <Text style={styles.lastLabel}>Expected</Text>
-              <Text style={styles.lastValue}>
+          <View className="gap-1.5 rounded-lg border border-stone-200 bg-white p-3.5">
+            <Text className="mb-1 text-[13px] font-extrabold text-stone-500">
+              {formatTime(data.last.createdAt)}
+            </Text>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-bold text-stone-600">Expected</Text>
+              <Text className="text-base font-black text-stone-900">
                 {formatPeso.format(data.last.expectedCash + data.last.expectedGcash)}
               </Text>
             </View>
-            <View style={styles.lastRow}>
-              <Text style={styles.lastLabel}>Actual</Text>
-              <Text style={styles.lastValue}>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-bold text-stone-600">Actual</Text>
+              <Text className="text-base font-black text-stone-900">
                 {formatPeso.format(data.last.actualCash + data.last.actualGcash)}
               </Text>
             </View>
-            <View style={styles.lastRow}>
-              <Text style={styles.lastLabel}>Difference</Text>
+            <View className="flex-row items-center justify-between">
+              <Text className="text-sm font-bold text-stone-600">Difference</Text>
               <Text
-                style={[
-                  styles.lastValue,
-                  data.last.difference === 0 ? styles.diffOk : styles.diffWarn,
-                ]}>
+                className={`text-base font-black ${data.last.difference === 0 ? 'text-emerald-600' : 'text-amber-700'}`}>
                 {formatPeso.format(data.last.difference)}
               </Text>
             </View>
@@ -160,68 +161,3 @@ export default function ReconcileScreen() {
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  summaryGrid: {
-    gap: 12,
-  },
-  outputBox: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 5,
-    padding: 16,
-  },
-  outputLabel: {
-    color: '#475569',
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  outputValue: {
-    color: '#0F172A',
-    fontSize: 30,
-    fontWeight: '900',
-    lineHeight: 36,
-  },
-  outputNote: {
-    color: '#64748B',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  lastBox: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 6,
-    padding: 14,
-  },
-  lastTime: {
-    color: '#64748B',
-    fontSize: 13,
-    fontWeight: '800',
-    marginBottom: 4,
-  },
-  lastRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  lastLabel: {
-    color: '#475569',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  lastValue: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  diffOk: {
-    color: '#16A34A',
-  },
-  diffWarn: {
-    color: '#B45309',
-  },
-});

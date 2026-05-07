@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AppScreen, MetricCard, Section } from '@/components/app-screen';
 import { formatPeso } from '@/constants/ganansya';
@@ -43,7 +43,7 @@ export default function ReportsScreen() {
       eyebrow="Owner Reports"
       title="Kita at volume"
       description="Daily and monthly snapshots for owner monitoring.">
-      <View style={styles.metricGrid}>
+      <View className="gap-3">
         <MetricCard
           caption={`${todayCount} transaction${todayCount === 1 ? '' : 's'} today`}
           label="Daily Profit"
@@ -58,17 +58,19 @@ export default function ReportsScreen() {
       </View>
 
       <Section title="Transaction Volume">
-        <View style={styles.volumeBox}>
-          <Text style={styles.volumeNumber}>
+        <View className="items-center rounded-lg border border-stone-200 bg-white p-[18px]">
+          <Text className="text-[42px] font-black leading-[48px] text-stone-900">
             {todayCount}
-            <Text style={styles.volumeOf}> / {TARGET_TRANSACTIONS_PER_DAY}</Text>
+            <Text className="text-2xl font-black text-stone-400"> / {TARGET_TRANSACTIONS_PER_DAY}</Text>
           </Text>
-          <Text style={styles.volumeLabel}>transactions today vs daily target</Text>
+          <Text className="text-[15px] font-bold text-stone-500">
+            transactions today vs daily target
+          </Text>
         </View>
       </Section>
 
       <Section title="Growth Phases">
-        <View style={styles.phaseList}>
+        <View className="gap-2.5">
           <Phase label="Phase 1" text="Single store validation" />
           <Phase label="Phase 2" text="Increase float" />
           <Phase label="Phase 3" text="Multi-store rollout" />
@@ -86,60 +88,9 @@ type PhaseProps = {
 
 function Phase({ label, text }: PhaseProps) {
   return (
-    <View style={styles.phase}>
-      <Text style={styles.phaseLabel}>{label}</Text>
-      <Text style={styles.phaseText}>{text}</Text>
+    <View className="gap-0.5 rounded-lg border border-stone-200 bg-white p-3.5">
+      <Text className="text-[15px] font-black text-brand">{label}</Text>
+      <Text className="text-base font-bold text-stone-900">{text}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  metricGrid: {
-    gap: 12,
-  },
-  volumeBox: {
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    padding: 18,
-  },
-  volumeNumber: {
-    color: '#0F172A',
-    fontSize: 42,
-    fontWeight: '900',
-    lineHeight: 48,
-  },
-  volumeOf: {
-    color: '#94A3B8',
-    fontSize: 24,
-    fontWeight: '900',
-  },
-  volumeLabel: {
-    color: '#64748B',
-    fontSize: 15,
-    fontWeight: '700',
-  },
-  phaseList: {
-    gap: 10,
-  },
-  phase: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 2,
-    padding: 14,
-  },
-  phaseLabel: {
-    color: '#2563EB',
-    fontSize: 15,
-    fontWeight: '900',
-  },
-  phaseText: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-});

@@ -1,6 +1,6 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 
 import { useAuth } from '@/lib/auth/context';
 
@@ -48,15 +48,13 @@ export default function LoginScreen() {
       if (signingIn) return;
 
       if (key.kind === 'digit') {
-        setPin((current) => {
-          if (current.length >= PIN_LENGTH) return current;
-          const next = current + key.value;
-          if (next.length === PIN_LENGTH) {
-            void submit(next);
-          }
-          return next;
-        });
+        if (pin.length >= PIN_LENGTH) return;
+        const next = pin + key.value;
+        setPin(next);
         if (error) setError(null);
+        if (next.length === PIN_LENGTH) {
+          void submit(next);
+        }
         return;
       }
 
@@ -67,57 +65,55 @@ export default function LoginScreen() {
 
       setPin('');
     },
-    [error, signingIn, submit],
+    [error, pin, signingIn, submit],
   );
 
   return (
-    <View style={styles.screen}>
-      <View style={styles.content}>
-        <View style={styles.header}>
-          <Text style={styles.brand}>Ganansya</Text>
-          <Text style={styles.title}>PIN Login</Text>
-          <Text style={styles.description}>Simple sign in for the store operator.</Text>
+    <View className="flex-1 bg-stone-50">
+      <View className="flex-1 justify-center gap-[22px] p-5">
+        <View className="gap-1.5">
+          <Text className="text-base font-black text-brand">Ganansya</Text>
+          <Text className="text-[34px] font-black leading-10 text-stone-900">PIN Login</Text>
+          <Text className="text-base text-stone-500">
+            Simple sign in for the store operator.
+          </Text>
         </View>
 
-        <View style={styles.pinPanel}>
-          <Text style={styles.pinLabel}>Enter PIN</Text>
-          <View style={styles.pinDots}>
+        <View className="items-center gap-3.5 rounded-lg border border-stone-200 bg-white p-6">
+          <Text className="text-base font-extrabold text-stone-700">Enter PIN</Text>
+          <View className="flex-row gap-3">
             {Array.from({ length: PIN_LENGTH }).map((_, idx) => (
               <View
                 key={idx}
-                style={idx < pin.length ? styles.dot : styles.dotMuted}
+                className={`h-4 w-4 rounded-lg ${idx < pin.length ? 'bg-brand' : 'bg-stone-300'}`}
               />
             ))}
           </View>
           {error ? (
-            <Text style={styles.errorText}>{error}</Text>
+            <Text className="text-sm font-extrabold text-red-700">{error}</Text>
           ) : signingIn ? (
-            <View style={styles.loadingRow}>
-              <ActivityIndicator size="small" color="#2563EB" />
-              <Text style={styles.loadingText}>Checking PIN...</Text>
+            <View className="flex-row items-center gap-2">
+              <ActivityIndicator size="small" color="#047857" />
+              <Text className="text-sm font-bold text-brand">Checking PIN...</Text>
             </View>
           ) : (
-            <Text style={styles.helpText}>{PIN_LENGTH} digits required</Text>
+            <Text className="text-[13px] font-bold text-stone-500">{PIN_LENGTH} digits required</Text>
           )}
         </View>
 
-        <View style={styles.keypad}>
+        <View className="flex-row flex-wrap gap-2.5">
           {keypad.map((key, idx) => (
             <Pressable
               key={idx}
               disabled={signingIn}
               onPress={() => handleKey(key)}
-              style={({ pressed }) => [
-                styles.key,
-                pressed && styles.keyPressed,
-                signingIn && styles.keyDisabled,
-              ]}>
+              className={`flex-grow basis-[30%] items-center justify-center rounded-lg border border-stone-300 bg-white min-h-[58px] active:opacity-70 ${signingIn ? 'opacity-50' : ''}`}>
               {key.kind === 'digit' ? (
-                <Text style={styles.keyText}>{key.value}</Text>
+                <Text className="text-[22px] font-extrabold text-stone-900">{key.value}</Text>
               ) : key.kind === 'back' ? (
-                <MaterialIcons name="backspace" size={22} color="#0F172A" />
+                <MaterialIcons name="backspace" size={22} color="#1C1917" />
               ) : (
-                <Text style={styles.keyAction}>Clear</Text>
+                <Text className="text-[15px] font-black text-stone-900">Clear</Text>
               )}
             </Pressable>
           ))}
@@ -126,116 +122,3 @@ export default function LoginScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  content: {
-    flex: 1,
-    gap: 22,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  header: {
-    gap: 6,
-  },
-  brand: {
-    color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  title: {
-    color: '#0F172A',
-    fontSize: 34,
-    fontWeight: '900',
-    lineHeight: 40,
-  },
-  description: {
-    color: '#64748B',
-    fontSize: 16,
-  },
-  pinPanel: {
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 14,
-    padding: 24,
-  },
-  pinLabel: {
-    color: '#334155',
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  pinDots: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  dot: {
-    backgroundColor: '#2563EB',
-    borderRadius: 8,
-    height: 16,
-    width: 16,
-  },
-  dotMuted: {
-    backgroundColor: '#CBD5E1',
-    borderRadius: 8,
-    height: 16,
-    width: 16,
-  },
-  errorText: {
-    color: '#B91C1C',
-    fontSize: 14,
-    fontWeight: '800',
-  },
-  helpText: {
-    color: '#64748B',
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  loadingRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
-  },
-  loadingText: {
-    color: '#2563EB',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  keypad: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 10,
-  },
-  key: {
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderColor: '#CBD5E1',
-    borderRadius: 8,
-    borderWidth: 1,
-    flexBasis: '30%',
-    flexGrow: 1,
-    justifyContent: 'center',
-    minHeight: 58,
-  },
-  keyPressed: {
-    opacity: 0.7,
-  },
-  keyDisabled: {
-    opacity: 0.5,
-  },
-  keyText: {
-    color: '#0F172A',
-    fontSize: 22,
-    fontWeight: '800',
-  },
-  keyAction: {
-    color: '#0F172A',
-    fontSize: 15,
-    fontWeight: '900',
-  },
-});

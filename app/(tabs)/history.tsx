@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AppScreen, EmptyState, Section } from '@/components/app-screen';
 import { formatPeso } from '@/constants/ganansya';
@@ -34,23 +34,35 @@ export default function HistoryScreen() {
             title="Wala pang log"
           />
         ) : (
-          <View style={styles.list}>
+          <View className="gap-2.5">
             {transactions.map((transaction) => (
-              <View key={transaction.id} style={styles.item}>
-                <View style={styles.itemHeader}>
-                  <Text style={styles.itemType}>
+              <View
+                key={transaction.id}
+                className="gap-2 rounded-lg border border-stone-200 bg-white p-3.5">
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-base font-black text-stone-900">
                     {transaction.type === 'cashIn' ? 'Cash In' : 'Cash Out'}
                   </Text>
-                  <Text style={styles.itemTime}>{formatTime(transaction.createdAt)}</Text>
+                  <Text className="text-sm font-bold text-stone-500">
+                    {formatTime(transaction.createdAt)}
+                  </Text>
                 </View>
-                <Text style={styles.itemAmount}>{formatPeso.format(transaction.amount)}</Text>
-                <View style={styles.metaRow}>
-                  <Text style={styles.metaText}>Fee {formatPeso.format(transaction.fee)}</Text>
+                <Text className="text-[27px] font-black leading-8 text-stone-900">
+                  {formatPeso.format(transaction.amount)}
+                </Text>
+                <View className="flex-row flex-wrap gap-2">
+                  <Text className="rounded-md bg-stone-100 px-2 py-[5px] text-[13px] font-bold text-stone-600">
+                    Fee {formatPeso.format(transaction.fee)}
+                  </Text>
                   {transaction.reference ? (
-                    <Text style={styles.metaText}>Ref {transaction.reference}</Text>
+                    <Text className="rounded-md bg-stone-100 px-2 py-[5px] text-[13px] font-bold text-stone-600">
+                      Ref {transaction.reference}
+                    </Text>
                   ) : null}
                   {transaction.thresholdOverride ? (
-                    <Text style={[styles.metaText, styles.metaWarn]}>Override</Text>
+                    <Text className="rounded-md bg-red-50 px-2 py-[5px] text-[13px] font-bold text-red-700">
+                      Override
+                    </Text>
                   ) : null}
                 </View>
               </View>
@@ -61,56 +73,3 @@ export default function HistoryScreen() {
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  list: {
-    gap: 10,
-  },
-  item: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 8,
-    padding: 14,
-  },
-  itemHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  itemType: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  itemTime: {
-    color: '#64748B',
-    fontSize: 14,
-    fontWeight: '700',
-  },
-  itemAmount: {
-    color: '#0F172A',
-    fontSize: 27,
-    fontWeight: '900',
-    lineHeight: 32,
-  },
-  metaRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  metaText: {
-    backgroundColor: '#F1F5F9',
-    borderRadius: 6,
-    color: '#475569',
-    fontSize: 13,
-    fontWeight: '700',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-  },
-  metaWarn: {
-    backgroundColor: '#FEF2F2',
-    color: '#B91C1C',
-  },
-});

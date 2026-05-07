@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { ActionLink, AppScreen, EmptyState, MetricCard, Section } from '@/components/app-screen';
 import { floatThreshold, formatPeso } from '@/constants/ganansya';
@@ -32,7 +32,7 @@ export default function DashboardScreen() {
       eyebrow="Dashboard"
       title="Kumusta, Tindera"
       description="Quick view ng cash, GCash, at kita today.">
-      <View style={styles.metrics}>
+      <View className="gap-3">
         <MetricCard label="Cash on Hand" value={formatPeso.format(cash)} />
         <MetricCard label="GCash Balance" value={formatPeso.format(gcash)} />
         <MetricCard
@@ -44,29 +44,29 @@ export default function DashboardScreen() {
       </View>
 
       <Section title="Quick Action" description="One tap para magsimula.">
-        <View style={styles.quickActions}>
+        <View className="gap-3">
           <ActionLink
             description="Customer gives cash, store sends GCash."
             href="/transaction"
             icon="call-made"
             label="Cash In"
-            tone="blue"
+            tone="brand"
           />
           <ActionLink
             description="Customer sends GCash, store gives cash."
             href="/transaction"
             icon="call-received"
             label="Cash Out"
-            tone="green"
+            tone="gold"
           />
         </View>
       </Section>
 
       <Section title="Float Status">
         {cashLow || gcashLow ? (
-          <View style={styles.alertBox}>
-            <Text style={styles.alertTitle}>Limit transactions muna</Text>
-            <Text style={styles.alertText}>
+          <View className="gap-1 rounded-lg border border-red-200 bg-red-50 p-3.5">
+            <Text className="text-base font-black text-red-900">Limit transactions muna</Text>
+            <Text className="text-sm leading-5 text-red-900">
               May balance below {formatPeso.format(floatThreshold)}. Check cash or GCash before
               releasing funds.
             </Text>
@@ -81,7 +81,7 @@ export default function DashboardScreen() {
       </Section>
 
       <Section title="Daily Flow">
-        <View style={styles.flowList}>
+        <View className="gap-2.5">
           <FlowItem label="Start of day" text="Check actual cash and GCash balances." />
           <FlowItem label="Every transaction" text="Enter amount, confirm, then log reference." />
           <FlowItem label="End of day" text="Run reconciliation and report differences." />
@@ -98,57 +98,9 @@ type FlowItemProps = {
 
 function FlowItem({ label, text }: FlowItemProps) {
   return (
-    <View style={styles.flowItem}>
-      <Text style={styles.flowLabel}>{label}</Text>
-      <Text style={styles.flowText}>{text}</Text>
+    <View className="gap-[3px] rounded-lg border border-stone-200 bg-white p-3.5">
+      <Text className="text-base font-extrabold text-stone-900">{label}</Text>
+      <Text className="text-sm leading-5 text-stone-500">{text}</Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  metrics: {
-    gap: 12,
-  },
-  quickActions: {
-    gap: 12,
-  },
-  alertBox: {
-    backgroundColor: '#FEF2F2',
-    borderColor: '#FECACA',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 4,
-    padding: 14,
-  },
-  alertTitle: {
-    color: '#991B1B',
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  alertText: {
-    color: '#7F1D1D',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  flowList: {
-    gap: 10,
-  },
-  flowItem: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 3,
-    padding: 14,
-  },
-  flowLabel: {
-    color: '#0F172A',
-    fontSize: 16,
-    fontWeight: '800',
-  },
-  flowText: {
-    color: '#64748B',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});

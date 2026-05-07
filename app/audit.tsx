@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AppScreen, EmptyState, Section } from '@/components/app-screen';
 import { useAsyncData } from '@/hooks/use-async-data';
@@ -33,17 +33,25 @@ export default function AuditScreen() {
             title="Walang event pa"
           />
         ) : (
-          <View style={styles.list}>
+          <View className="gap-2.5">
             {events.map((event) => (
-              <View key={event.id} style={styles.event}>
-                <View style={styles.eventHeader}>
-                  <Text style={styles.eventTime}>{formatTime(event.createdAt)}</Text>
+              <View
+                key={event.id}
+                className="gap-1.5 rounded-lg border border-stone-200 bg-white p-3.5">
+                <View className="flex-row items-center justify-between gap-2">
+                  <Text className="text-[13px] font-extrabold text-stone-500">
+                    {formatTime(event.createdAt)}
+                  </Text>
                   {event.kind === 'threshold_override' ? (
-                    <Text style={styles.tagWarn}>Override</Text>
+                    <Text className="rounded-md bg-red-50 px-2 py-[3px] text-xs font-black text-red-700">
+                      Override
+                    </Text>
                   ) : null}
                 </View>
-                <Text style={styles.eventTitle}>{event.title}</Text>
-                {event.detail ? <Text style={styles.eventDetail}>{event.detail}</Text> : null}
+                <Text className="text-[17px] font-black text-stone-900">{event.title}</Text>
+                {event.detail ? (
+                  <Text className="text-sm leading-5 text-stone-600">{event.detail}</Text>
+                ) : null}
               </View>
             ))}
           </View>
@@ -52,47 +60,3 @@ export default function AuditScreen() {
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  list: {
-    gap: 10,
-  },
-  event: {
-    backgroundColor: '#FFFFFF',
-    borderColor: '#E2E8F0',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 5,
-    padding: 14,
-  },
-  eventHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: 8,
-    justifyContent: 'space-between',
-  },
-  eventTime: {
-    color: '#64748B',
-    fontSize: 13,
-    fontWeight: '800',
-  },
-  tagWarn: {
-    backgroundColor: '#FEF2F2',
-    borderRadius: 6,
-    color: '#B91C1C',
-    fontSize: 12,
-    fontWeight: '900',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-  },
-  eventTitle: {
-    color: '#0F172A',
-    fontSize: 17,
-    fontWeight: '900',
-  },
-  eventDetail: {
-    color: '#475569',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});

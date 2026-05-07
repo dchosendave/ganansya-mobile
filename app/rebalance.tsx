@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { AppScreen, Button, Field, MetricCard, Section } from '@/components/app-screen';
 import { floatThreshold, formatPeso } from '@/constants/ganansya';
@@ -16,7 +16,7 @@ export default function RebalanceScreen() {
       eyebrow="Rebalance Request"
       title="Request additional float"
       description="For low cash or low GCash situations that need owner action.">
-      <View style={styles.summaryGrid}>
+      <View className="gap-3">
         <MetricCard label="Cash on Hand" value={formatPeso.format(cash)} />
         <MetricCard label="GCash Balance" value={formatPeso.format(gcash)} />
         <MetricCard
@@ -34,9 +34,9 @@ export default function RebalanceScreen() {
       </Section>
 
       <Section title="Owner Response">
-        <View style={styles.responseBox}>
-          <Text style={styles.responseTitle}>Pending owner approval</Text>
-          <Text style={styles.responseText}>
+        <View className="gap-1 rounded-lg border border-amber-200 bg-amber-50 p-3.5">
+          <Text className="text-base font-black text-amber-900">Pending owner approval</Text>
+          <Text className="text-sm leading-5 text-amber-900">
             Owner can approve remotely, send funds, then mark equivalent cash for later remittance.
           </Text>
         </View>
@@ -46,27 +46,3 @@ export default function RebalanceScreen() {
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  summaryGrid: {
-    gap: 12,
-  },
-  responseBox: {
-    backgroundColor: '#FFF7ED',
-    borderColor: '#FED7AA',
-    borderRadius: 8,
-    borderWidth: 1,
-    gap: 4,
-    padding: 14,
-  },
-  responseTitle: {
-    color: '#9A3412',
-    fontSize: 16,
-    fontWeight: '900',
-  },
-  responseText: {
-    color: '#7C2D12',
-    fontSize: 14,
-    lineHeight: 20,
-  },
-});
