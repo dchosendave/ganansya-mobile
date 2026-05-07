@@ -1,17 +1,24 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen, Button, Field, MetricCard, Section } from '@/components/app-screen';
-import { balances, formatPeso, floatThreshold } from '@/constants/ganansya';
+import { floatThreshold, formatPeso } from '@/constants/ganansya';
+import { useAsyncData } from '@/hooks/use-async-data';
+import { getBalances } from '@/lib/db/balances';
+import type { BalanceSnapshot } from '@/types/db';
 
 export default function RebalanceScreen() {
+  const { data } = useAsyncData<BalanceSnapshot>(getBalances);
+  const cash = data?.cash ?? 0;
+  const gcash = data?.gcash ?? 0;
+
   return (
     <AppScreen
       eyebrow="Rebalance Request"
       title="Request additional float"
       description="For low cash or low GCash situations that need owner action.">
       <View style={styles.summaryGrid}>
-        <MetricCard label="Cash on Hand" value={formatPeso.format(balances.cashOnHand)} />
-        <MetricCard label="GCash Balance" value={formatPeso.format(balances.gcashBalance)} />
+        <MetricCard label="Cash on Hand" value={formatPeso.format(cash)} />
+        <MetricCard label="GCash Balance" value={formatPeso.format(gcash)} />
         <MetricCard
           caption="Limit affected transaction type below this balance"
           label="Threshold"

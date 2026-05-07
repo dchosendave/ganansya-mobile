@@ -1,11 +1,31 @@
 import { StyleSheet, Text, View } from 'react-native';
 
 import { ActionLink, AppScreen, EmptyState, MetricCard, Section } from '@/components/app-screen';
-import { balances, floatThreshold, formatPeso } from '@/constants/ganansya';
+import { floatThreshold, formatPeso } from '@/constants/ganansya';
+import { useAsyncData } from '@/hooks/use-async-data';
+import { getBalances } from '@/lib/db/balances';
+import { kitaToday } from '@/lib/db/transactions';
+import type { BalanceSnapshot } from '@/types/db';
+
+interface DashboardData {
+  balances: BalanceSnapshot;
+  kitaToday: number;
+}
+
+async function loadDashboard(): Promise<DashboardData> {
+  const [balances, kita] = await Promise.all([getBalances(), kitaToday()]);
+  return { balances, kitaToday: kita };
+}
 
 export default function DashboardScreen() {
-  const cashLow = balances.cashOnHand < floatThreshold;
-  const gcashLow = balances.gcashBalance < floatThreshold;
+  const { data } = useAsyncData<DashboardData>(loadDashboard);
+
+  const cash = data?.balances.cash ?? 0;
+  const gcash = data?.balances.gcash ?? 0;
+  const kita = data?.kitaToday ?? 0;
+
+  const cashLow = cash < floatThreshold;
+  const gcashLow = gcash < floatThreshold;
 
   return (
     <AppScreen
@@ -13,13 +33,13 @@ export default function DashboardScreen() {
       title="Kumusta, Tindera"
       description="Quick view ng cash, GCash, at kita today.">
       <View style={styles.metrics}>
-        <MetricCard label="Cash on Hand" value={formatPeso.format(balances.cashOnHand)} />
-        <MetricCard label="GCash Balance" value={formatPeso.format(balances.gcashBalance)} />
+        <MetricCard label="Cash on Hand" value={formatPeso.format(cash)} />
+        <MetricCard label="GCash Balance" value={formatPeso.format(gcash)} />
         <MetricCard
           caption="Transaction fees collected today"
           label="Kita Today"
           tone="income"
-          value={formatPeso.format(balances.kitaToday)}
+          value={formatPeso.format(kita)}
         />
       </View>
 

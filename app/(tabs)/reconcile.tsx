@@ -2,13 +2,19 @@ import { useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { AppScreen, Button, Field, MetricCard, Section } from '@/components/app-screen';
-import { balances, formatPeso } from '@/constants/ganansya';
+import { formatPeso } from '@/constants/ganansya';
+import { useAsyncData } from '@/hooks/use-async-data';
+import { getBalances } from '@/lib/db/balances';
+import type { BalanceSnapshot } from '@/types/db';
 
 export default function ReconcileScreen() {
+  const { data } = useAsyncData<BalanceSnapshot>(getBalances);
   const [actualCash, setActualCash] = useState('');
   const [actualGcash, setActualGcash] = useState('');
 
-  const expectedTotal = balances.cashOnHand + balances.gcashBalance;
+  const expectedCash = data?.cash ?? 0;
+  const expectedGcash = data?.gcash ?? 0;
+  const expectedTotal = expectedCash + expectedGcash;
   const actualTotal = Number(actualCash || 0) + Number(actualGcash || 0);
   const difference = useMemo(() => actualTotal - expectedTotal, [actualTotal, expectedTotal]);
 
