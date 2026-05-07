@@ -16,8 +16,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+        <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
+        <Stack.Screen name="rebalance" options={{ title: 'Rebalance Request' }} />
+        <Stack.Screen name="admin/pricing" options={{ title: 'Pricing Rules' }} />
+        <Stack.Screen name="reports" options={{ title: 'Reports' }} />
+        <Stack.Screen name="audit" options={{ title: 'Audit Trail' }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
